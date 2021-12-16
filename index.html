@@ -1,0 +1,157 @@
+ <!DOCTYPE html>
+ <html lang="en">
+	<meta charset="UTF-8">
+	<title>Inflation</title>
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+
+	<script src="https://cdn.tailwindcss.com"></script>
+
+	<body>
+		<div class="container flex flex-col mx-auto p-4 bg-gray-100 mt-10">
+			<h1 class="text-6xl font-semibold mx-auto mb-10">Inflationsrechner Oesterreich</h1>
+			<div class="flex flex-row mx-auto w-3/4 justify-center text-center">
+				<div class="basis-5/12 flex flex-row">
+					<input id="amount" type="text" pattern="[0-9]+" onchange="recalculate()">
+
+					<select id="currency" onchange="recalculate()">
+						<option value="euro">Euro</option>
+						<option value="ats">Schilling</option>
+					</select>
+				</div>
+
+				<div class="basis-2/12">
+					in
+				</div>
+
+				<div class="basis-2/12 flex flex-row">
+					<select id="start" onchange="recalculate()">
+					</select>
+				</div>
+			</div>
+
+			<div class="mx-auto mt-5">
+				entsprechen
+			</div>
+
+			<div class="flex flex-row mx-auto w-3/4 justify-center text-center mt-5">
+				<div id="output" class="basis-5/12">
+					<span id="euroOutput"></span> Euro / <span id="atsOutput"></span> Schilling
+				</div>
+
+				<div class="basis-2/12">
+					in
+				</div>
+
+				<div class="basis-2/12 flex flex-row">
+					<select id="end" onchange="recalculate()">
+					</select>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script>
+		let inflationData = {
+			"1967": 104.0,
+			"1968": 106.9,
+			"1969": 110.2,
+			"1970": 115.0,
+			"1971": 120.4,
+			"1972": 128.0,
+			"1973": 137.7,
+			"1974": 150.8,
+			"1975": 163.5,
+			"1976": 175.5,
+			"1977": 185.1,
+			"1978": 191.7,
+			"1979": 198.8,
+			"1980": 211.4,
+			"1981": 225.8,
+			"1982": 238.1,
+			"1983": 246.0,
+			"1984": 260.0,
+			"1985": 268.3,
+			"1986": 272.8,
+			"1987": 276.7,
+			"1988": 282.0,
+			"1989": 289.2,
+			"1990": 298.6,
+			"1991": 308.6,
+			"1992": 321.0,
+			"1993": 332.7,
+			"1994": 342.5,
+			"1995": 350.2,
+			"1996": 356.7,
+			"1997": 361.4,
+			"1998": 364.7,
+			"1999": 366.8,
+			"2000": 375.4,
+			"2001": 385.4,
+			"2002": 392.3,
+			"2003": 397.7,
+			"2004": 405.9,
+			"2005": 415.2,
+			"2006": 421.2,
+			"2007": 430.4,
+			"2008": 444.2,
+			"2009": 446.5,
+			"2010": 454.5,
+			"2011": 469.3,
+			"2012": 481.0,
+			"2013": 490.6,
+			"2014": 498.5,
+			"2015": 503.0,
+			"2016": 507.5,
+			"2017": 518.1,
+			"2018": 528.4,
+			"2019": 536.5,
+			"2020": 544.3
+		}
+
+		const amountInput = document.getElementById('amount')
+
+		const euroOutput = document.getElementById('euroOutput')
+		const atsOutput = document.getElementById('atsOutput')
+
+		const startSelect = document.getElementById('start')
+		const endSelect = document.getElementById('end')
+
+		const currencySelect = document.getElementById('currency')
+
+		for (const [key, value] of Object.entries(inflationData)) {
+			let startOption = document.createElement('option')
+			startOption.text = key
+			startOption.value = key
+			startSelect.appendChild(startOption)
+
+			let endOption = document.createElement('option')
+			endOption.text = key
+			endOption.value = key
+			endSelect.appendChild(endOption)
+		}
+
+
+		function recalculate() {
+			let startYear = startSelect.value
+			let endYear = endSelect.value
+			let amount = amountInput.value
+
+			let indexStart = inflationData[startYear]
+			let indexEnd = inflationData[endYear]
+
+			let factor = 1
+			if (indexEnd !== indexStart) {
+				factor += ((indexEnd - indexStart) / indexStart)
+			}
+
+			let output = factor * amount
+
+			let currency = currencySelect.value
+
+			euroOutput.innerHTML = ((currency === "ats") ? output / 13.7603 : output).toFixed(2)
+			atsOutput.innerHTML = ((currency === "euro") ? output * 13.7603 : output).toFixed(2)
+		}
+
+		recalculate()
+
+	</script>
+</html> 
